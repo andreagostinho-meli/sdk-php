@@ -14,6 +14,8 @@ use MercadoPago\Serialization\Serializer;
 final class OrderClient extends MercadoPagoClient
 {
     private const URL = "/v1/orders";
+    private const URL_WITH_ID = "/v1/orders/%s";
+    private const URL_CAPTURE = "/v1/orders/%s/capture";
 
     /** Default constructor. Uses the default http client used by the SDK or custom http client provided. */
     public function __construct(?MPHttpClient $MPHttpClient = null)
@@ -47,7 +49,7 @@ final class OrderClient extends MercadoPagoClient
      */
     public function capture(string $orderID, ?RequestOptions $request_options = null): Order
     {
-        $response = parent::send(sprintf(self::URL_WITH_ID, strval($orderID)), HttpMethod::POST, null, null, $request_options);
+        $response = parent::send(sprintf(self::URL_CAPTURE, $orderID), HttpMethod::POST, null, null, $request_options);
         $result = Serializer::deserializeFromJson(Order::class, $response->getContent());
         $result->setResponse($response);
         return $result;

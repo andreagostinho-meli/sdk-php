@@ -1,9 +1,9 @@
 <?php
 
-namespace Examples\Order\Create;
+namespace Examples\Order\Capture;
 
 // Step 1: Require the library from your Composer vendor folder
-require_once '../../../vendor/autoload.php';
+require_once '../../vendor/autoload.php';
 
 use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Client\Order\OrderClient;
@@ -11,7 +11,7 @@ use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 
 // Step 2: Set production or sandbox access token
-MercadoPagoConfig::setAccessToken("<ACCESS_TOKEN>");
+MercadoPagoConfig::setAccessToken("");
 // Step 2.1 (optional - default is SERVER): Set your runtime enviroment from MercadoPagoConfig::RUNTIME_ENVIROMENTS
 // In case you want to test in your local machine first, set runtime enviroment to LOCAL
 MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
@@ -35,7 +35,7 @@ try {
                     "payment_method" => [
                         "id" => "visa",
                         "type" => "credit_card",
-                        "token" => "<CARD_TOKEN>",
+                        "token" => "",
                         "installments" => 1,
                     ]
                 ]
@@ -43,17 +43,18 @@ try {
         ],
         "processing_mode" => "automatic",
         "payer" => [
-            "email" => "<PAYER_EMAIL>",
+            "email" => "",
         ]
     ];
 
     // Step 5: Create the request options, setting X-Idempotency-Key
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
+    $request_options->setCustomHeaders(["X-Idempotency-Key: 0987654cgyt6uyiuh", "X-Sandbox: true"]);
 
     // Step 6: Make the request
     $order = $client->create($request, $request_options);
     echo "Order ID:" . $order->id;
+    echo "Order" . $order->status;
 
     // step 7: Capture the order
     $order = $client->capture($order->id, $request_options);
