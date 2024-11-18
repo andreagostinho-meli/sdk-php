@@ -36,4 +36,20 @@ final class OrderClient extends MercadoPagoClient
         $result->setResponse($response);
         return $result;
     }
+
+    /**
+     * Method responsible for capturing an order by ID with request options
+     * @param string $orderID ID of Order.
+     * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
+     * @return \MercadoPago\Resources\Order Order created.
+     * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
+     * @throws \Exception if the request fails.
+     */
+    public function capture(string $orderID, ?RequestOptions $request_options = null): Order
+    {
+        $response = parent::send(sprintf(self::URL_WITH_ID, strval($orderID)), HttpMethod::POST, null, null, $request_options);
+        $result = Serializer::deserializeFromJson(Order::class, $response->getContent());
+        $result->setResponse($response);
+        return $result;
+    }
 }
