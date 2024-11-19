@@ -83,7 +83,8 @@ try {
 
     // Step 6: Make the request
     $order = $client->create($request, $request_options);
-    echo "Order ID:" . $order->id;
+    echo "Order ID:" . $order->id . "\n";
+    echo "email:" . $order->payer->email;
 
     // Step 7: Handle exceptions
 } catch (MPApiException $e) {

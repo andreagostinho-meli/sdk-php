@@ -2,6 +2,7 @@
 
 namespace MercadoPago\Tests\Client\Integration\Order;
 
+use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Client\Order\OrderClient;
 use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
@@ -14,7 +15,7 @@ final class OrderClientITTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
-        MercadoPagoConfig::setAccessToken(getenv("APP_USR-874202490252970-100714-e890db6519b0dceb4ef24ef41ed816e4-2021490138"));
+        MercadoPagoConfig::setAccessToken(getenv("ACCESS_TOKEN"));
     }
 
     public function testCreateSuccess(): void
@@ -23,7 +24,7 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequest();
 
-            $order = $client->create($request, $request_options);
+            $order = $client->create($request);
 
             $this->assertNotNull($order->id);
         } catch (MPApiException $e) {
@@ -67,7 +68,10 @@ final class OrderClientITTest extends TestCase
         try {
             $client = new OrderClient();
             $orderId = "01JD2P9GGXAPBDGG6YT90N77M3";
-            $order = $client->get($orderId);
+            $request_options = new RequestOptions();
+            $request_options->setCustomHeaders(["X-Sandbox: true"]);
+            $order = $client->get($orderId, $request_options);
+
 
             // Verificações das respostas
             $this->assertNotNull($order->id);

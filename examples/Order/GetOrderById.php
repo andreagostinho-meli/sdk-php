@@ -26,8 +26,8 @@ try {
 
     // Obtenha a ordem
     $order = $client->get($orderId, $request_options);
-    var_dump($order);
-    // print_r($order);
+    // var_dump($order);
+    //print_r($order);
 
     // Exibir informações da ordem
     echo "Order ID: " . $order->id . "\n";
@@ -38,13 +38,14 @@ try {
     echo "Status Detail: " . $order->status_detail . "\n";
     echo "Created Date: " . $order->created_date . "\n";
     echo "Last Updated Date: " . $order->last_updated_date . "\n";
+    echo "email:" . $order->payer->email;
 
     // Verificando o objeto payer - não está funcionando, pois mesmo com todas as alterações e inclusão de func pra DESERIALIZAR O JSON, O RETORNO AINDA É DE Payer information is not available.
     if (isset($order->payer) && $order->payer instanceof \MercadoPago\Resources\Order\Payer) {
         echo "Payer Email: " . $order->payer->email . "\n";
     } else {
         echo "Payer information is not available.\n";
-        // var_dump($order);
+        //var_dump($order);
     }
 
     // Verificando as transações
