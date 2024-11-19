@@ -65,4 +65,33 @@ final class OrderClientUnitTest extends BaseClient
         ];
         return $request;
     }
+
+    /**
+    * Order Client unit tests.
+    */
+    public function testGetSuccess(): void
+    {
+        // O caminho para o arquivo JSON mock que representa a resposta da API
+        $filepath = '../../../../Resources/Mocks/Response/Order/get_order_response.json';
+        $mock_http_request = $this->mockHttpRequest($filepath, 200);
+        $http_client = new MPDefaultHttpClient($mock_http_request);
+        MercadoPagoConfig::setHttpClient($http_client);
+        $client = new OrderClient();
+
+        // ID do pedido que você deseja testar
+        $orderId = "01JD2P9GGXAPBDGG6YT90N77M3";
+        $order = $client->get($orderId);
+
+        // Verificações das respostas
+        $this->assertSame(200, $order->getResponse()->getStatusCode());
+        $this->assertSame("01JD2P9GGXAPBDGG6YT90N77M3", $order->id);
+        $this->assertSame("online", $order->type);
+        $this->assertSame("200.00", $order->total_amount);
+        $this->assertSame("ext_ref_1234", $order->external_reference);
+        $this->assertSame("processed", $order->status);
+        $this->assertSame("accredited", $order->status_detail);
+        $this->assertSame("test_1731354550@testuser.com", $order->payer->email); // Verificando o payer
+        $this->assertSame("automatic", $order->processing_mode);
+    }
+
 }
