@@ -23,41 +23,44 @@ try {
     // Step 4: Create the request array
     $request = [
         "type" => "online",
-        "total_amount" => "1000.00",
-        "external_reference" => "ext_ref",
+        "processing_mode" => "automatic",
+        "total_amount" => "200.00",
+        "external_reference" => "ext_ref_1234",
+        "payer" => [
+            "email" => "<EMAIL>"
+        ],
         "type_config" => [
             "capture_mode" => "manual"
         ],
         "transactions" => [
             "payments" => [
                 [
-                    "amount" => "1000.00",
+                    "amount" => "200.00",
                     "payment_method" => [
-                        "id" => "visa",
+                        "id" => "master",
                         "type" => "credit_card",
-                        "token" => "<CARD_TOKEN>",
+                        "token" => "<SOME_UNIQUE_TOKEN>",
                         "installments" => 1,
                     ]
                 ]
             ]
         ],
-        "processing_mode" => "automatic",
-        "payer" => [
-            "email" => "<PAYER_EMAIL>",
-        ]
     ];
 
     // Step 5: Create the request options, setting X-Idempotency-Key
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>", "X-Sandbox: true"]);
+    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
     // Step 6: Create the order
     $order = $client->create($request, $request_options);
     echo "Order ID:" . $order->id;
     echo "Order" . $order->status;
 
+    $request_options_capture = new RequestOptions();
+    $request_options_capture->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
+
     // step 7: Capture the order
-    $order = $client->capture($order->id, $request_options);
+    $order = $client->capture("$order->id", $request_options_capture);
     echo "Order Status:" . $order->status;
 
     // Step 8: Handle exceptions
