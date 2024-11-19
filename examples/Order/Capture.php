@@ -11,7 +11,7 @@ use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 
 // Step 2: Set production or sandbox access token
-MercadoPagoConfig::setAccessToken("");
+MercadoPagoConfig::setAccessToken("<ACCESS_TOKEN>");
 // Step 2.1 (optional - default is SERVER): Set your runtime enviroment from MercadoPagoConfig::RUNTIME_ENVIROMENTS
 // In case you want to test in your local machine first, set runtime enviroment to LOCAL
 MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
@@ -24,7 +24,7 @@ try {
     $request = [
         "type" => "online",
         "total_amount" => "1000.00",
-        "external_reference" => "ext_ref_1234",
+        "external_reference" => "ext_ref",
         "type_config" => [
             "capture_mode" => "manual"
         ],
@@ -35,7 +35,7 @@ try {
                     "payment_method" => [
                         "id" => "visa",
                         "type" => "credit_card",
-                        "token" => "",
+                        "token" => "<CARD_TOKEN>",
                         "installments" => 1,
                     ]
                 ]
@@ -43,15 +43,15 @@ try {
         ],
         "processing_mode" => "automatic",
         "payer" => [
-            "email" => "",
+            "email" => "<PAYER_EMAIL>",
         ]
     ];
 
     // Step 5: Create the request options, setting X-Idempotency-Key
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Idempotency-Key: 0987654cgyt6uyiuh", "X-Sandbox: true"]);
+    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>", "X-Sandbox: true"]);
 
-    // Step 6: Make the request
+    // Step 6: Create the order
     $order = $client->create($request, $request_options);
     echo "Order ID:" . $order->id;
     echo "Order" . $order->status;
