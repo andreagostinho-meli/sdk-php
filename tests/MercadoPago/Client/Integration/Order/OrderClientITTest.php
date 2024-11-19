@@ -59,4 +59,25 @@ final class OrderClientITTest extends TestCase
         ];
         return $request;
     }
+
+    public function testCaptureSuccess(): void
+    {
+        try {
+            $client = new OrderClient();
+            $request = $this->createRequest();
+
+            $order = $client->create($request, $request_options);
+
+            $order = $client->capture($$order->id, $request_options);
+
+            $this->assertSame($order->status, "captured");
+        } catch (MPApiException $e) {
+            $apiResponse = $e->getApiResponse();
+            $statusCode = $apiResponse->getStatusCode();
+            $responseBody = json_encode($apiResponse->getContent());
+            $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+        } catch (\Exception $e) {
+            $this->fail("Exception: " . $e->getMessage());
+        }
+    }
 }

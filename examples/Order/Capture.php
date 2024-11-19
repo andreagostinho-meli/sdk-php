@@ -60,7 +60,7 @@ try {
     $request_options_capture->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
     // step 7: Capture the order
-    $order = $client->capture("$order->id", $request_options_capture);
+    $order = $client->capture($order->id, $request_options_capture);
     echo "Order Status:" . $order->status;
 
     // Step 8: Handle exceptions
