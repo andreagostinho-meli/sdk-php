@@ -49,7 +49,7 @@ try {
 
     // Step 5: Create the request options, setting X-Idempotency-Key
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
+    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>", "X-Sandbox: true"]);
 
     // Step 6: Create the order
     $order = $client->create($request, $request_options);
@@ -57,7 +57,7 @@ try {
     echo "Order" . $order->status;
 
     $request_options_capture = new RequestOptions();
-    $request_options_capture->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
+    $request_options_capture->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>", "X-Sandbox: true"]);
 
     // step 7: Capture the order
     $order = $client->capture($order->id, $request_options_capture);
