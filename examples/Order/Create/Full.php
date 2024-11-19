@@ -1,9 +1,9 @@
 <?php
 
-namespace Examples\Order\Create;
+namespace Examples\Order;
 
 // Step 1: Require the library from your Composer vendor folder
-require_once '../../../vendor/autoload.php';
+require_once '../../vendor/autoload.php';
 
 use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Client\Order\OrderClient;
@@ -11,7 +11,7 @@ use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 
 // Step 2: Set production or sandbox access token
-MercadoPagoConfig::setAccessToken("APP_USR-874202490252970-100714-e890db6519b0dceb4ef24ef41ed816e4-2021490138");
+MercadoPagoConfig::setAccessToken("<ACCESS_TOKEN>");
 // Step 2.1 (optional - default is SERVER): Set your runtime enviroment from MercadoPagoConfig::RUNTIME_ENVIROMENTS
 // In case you want to test in your local machine first, set runtime enviroment to LOCAL
 MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
@@ -35,7 +35,7 @@ try {
                     "payment_method" => [
                         "id" => "master",
                         "type" => "credit_card",
-                        "token" => "a91faa12649b8ae1f67d99daa7874c1c",
+                        "token" => "<CARD_TOKEN>",
                         "installments" => 1,
                         "statement_descriptor" => "Store name",
                     ]
@@ -45,7 +45,7 @@ try {
         "processing_mode" => "automatic",
         "description" => "some description",
         "payer" => [
-            "email" => "teste@mail.com",
+            "email" => "<PAYER_EMAIL>",
             "first_name" => "John",
             "last_name" => "Doe",
             "identification" => [
@@ -79,12 +79,13 @@ try {
 
     // Step 5: Create the request options, setting X-Idempotency-Key
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Idempotency-Key: 1234", "X-Sandbox: true"]);
+    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
     // Step 6: Make the request
     $order = $client->create($request, $request_options);
-    echo "Order ID:" . $order->id . "\n";
-    echo "email:" . $order->payer->email;
+    echo "Order ID: " . $order->id . "\n";
+    echo "Total Amount: " . $order->total_amount . "\n";
+    echo "Status: " . $order->status . "\n";
 
     // Step 7: Handle exceptions
 } catch (MPApiException $e) {
