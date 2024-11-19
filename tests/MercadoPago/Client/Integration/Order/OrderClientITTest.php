@@ -2,6 +2,7 @@
 
 namespace MercadoPago\Tests\Client\Integration\Order;
 
+use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Client\Order\OrderClient;
 use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
@@ -23,7 +24,7 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequest();
 
-            $order = $client->create($request, $request_options);
+            $order = $client->create($request);
 
             $this->assertNotNull($order->id);
         } catch (MPApiException $e) {
@@ -35,6 +36,7 @@ final class OrderClientITTest extends TestCase
             $this->fail("Exception: " . $e->getMessage());
         }
     }
+
 
     private function createRequest(): array
     {
@@ -58,5 +60,36 @@ final class OrderClientITTest extends TestCase
             ]
         ];
         return $request;
+    }
+
+
+    public function testGetOrderSuccess(): void
+    {
+        try {
+            $client = new OrderClient();
+            $orderId = "01JD2P9GGXAPBDGG6YT90N77M3";
+            $request_options = new RequestOptions();
+            $request_options->setCustomHeaders(["X-Sandbox: true"]);
+            $order = $client->get($orderId, $request_options);
+
+
+            // Verificações das respostas
+            $this->assertNotNull($order->id);
+            $this->assertSame("01JD2P9GGXAPBDGG6YT90N77M3", $order->id);
+            $this->assertSame("online", $order->type);
+            $this->assertSame("200.00", $order->total_amount);
+            $this->assertSame("ext_ref_1234", $order->external_reference);
+            $this->assertSame("processed", $order->status);
+            $this->assertSame("accredited", $order->status_detail);
+            $this->assertSame("test_1731354550@testuser.com", $order->payer->email);
+
+        } catch (MPApiException $e) {
+            $apiResponse = $e->getApiResponse();
+            $statusCode = $apiResponse->getStatusCode();
+            $responseBody = json_encode($apiResponse->getContent());
+            $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+        } catch (\Exception $e) {
+            $this->fail("Exception: " . $e->getMessage());
+        }
     }
 }
