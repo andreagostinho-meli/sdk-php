@@ -4,6 +4,7 @@
 
 namespace MercadoPago\Resources\Order;
 
+use MercadoPago\Resources\Common\Identification;
 use MercadoPago\Serialization\Mapper;
 
 /** Payer class. */
@@ -22,13 +23,13 @@ class Payer
     public ?string $last_name;
 
     /** Identification. */
-    public array|object|null $identification;
+    public ?Identification $identification;
 
     /** Phone. */
-    public array|object|null $phone;
+    public ?Phone $phone;
 
     /** Address. */
-    public array|object|null $address;
+    public ?Address $address;
 
     private $map = [
         "identification" => "MercadoPago\Resources\Common\Identification",
@@ -42,5 +43,14 @@ class Payer
     public function getMap(): array
     {
         return $this->map;
+    }
+
+    public function jsonDeserialize(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value; // Atribui diretamente os valores
+            }
+        }
     }
 }

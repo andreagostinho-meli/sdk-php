@@ -30,4 +30,13 @@ class Transactions
     {
         return $this->map;
     }
+
+    public function jsonDeserialize(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value; // Atribui diretamente os valores
+            }
+        }
+    }
 }

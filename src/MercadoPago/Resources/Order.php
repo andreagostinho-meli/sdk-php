@@ -5,6 +5,9 @@
 namespace MercadoPago\Resources;
 
 use MercadoPago\Net\MPResource;
+use MercadoPago\Resources\Order\Payer;
+use MercadoPago\Resources\Order\Transactions;
+use MercadoPago\Resources\Order\TypeConfig;
 use MercadoPago\Serialization\Mapper;
 
 class Order extends MPResource
@@ -55,13 +58,13 @@ class Order extends MPResource
     public ?string $status_detail;
 
     /** Type config. */
-    public array|object|null $type_config;
+    public ?TypeConfig $type_config;
 
     /** Payer. */
-    public array|object|null $payer;
+    public ?Payer $payer;
 
     /** Transactions. */
-    public array|object|null $transactions;
+    public ?Transactions $transactions;
 
     /** Items. */
     public ?array $items;
@@ -79,5 +82,11 @@ class Order extends MPResource
     public function getMap(): array
     {
         return $this->map;
+    }
+
+    public function jsonDeserialize(array $data)
+    {
+        // Chama o método do trait Mapper para desserializar
+        parent::jsonDeserialize($data);
     }
 }
