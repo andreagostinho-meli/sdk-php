@@ -74,7 +74,7 @@ final class OrderClientUnitTest extends BaseClient
         MercadoPagoConfig::setHttpClient($http_client);
         $client = new OrderClient();
 
-        $order = $client->capture($this->($orderID, "01HRYFWNYRE1MR1E60MW3X0T2P"));
+        $order = $client->capture("01HRYFWNYRE1MR1E60MW3X0T2P");
 
         $this->assertSame(200, $order->getResponse()->getStatusCode());
         $this->assertSame("processed", $order->status);
