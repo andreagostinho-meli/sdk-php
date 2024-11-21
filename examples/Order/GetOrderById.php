@@ -25,7 +25,6 @@ try {
     $request_options->setCustomHeaders(["X-Sandbox: <SOME_UNIQUE_VALUE>"]);
 
     $order = $client->get($orderId, $request_options);
-    //print_r($order);
 
     echo "Order ID: " . $order->id . "\n";
     echo "Total Amount: " . $order->total_amount . "\n";
