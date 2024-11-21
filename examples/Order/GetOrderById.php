@@ -28,26 +28,17 @@ try {
 
     echo "Order ID: " . $order->id . "\n";
     echo "Total Amount: " . $order->total_amount . "\n";
-    echo "Type: " . $order->type . "\n";
-    echo "External Reference: " . $order->external_reference . "\n";
     echo "Status: " . $order->status . "\n";
-    echo "Status Detail: " . $order->status_detail . "\n";
-    echo "Created Date: " . $order->created_date . "\n";
-    echo "Last Updated Date: " . $order->last_updated_date . "\n";
 
     // Verificando as transações
     if (isset($order->transactions) && isset($order->transactions->payments) && is_array($order->transactions->payments) && count($order->transactions->payments) > 0) {
         $payment = $order->transactions->payments[0];
 
         echo "Payments Id: " . $payment->id . "\n";
-        echo "Payment Processed: " . $payment->status . "\n";
         echo "Payment Amount: " . $payment->amount . "\n";
 
         if (isset($payment->payment_method)) {
             echo "Payment Method ID: " . $payment->payment_method->id . "\n";
-            echo "Payment Method Type: " . $payment->payment_method->type . "\n";
-            echo "Issuer ID: " . $payment->payment_method->issuer_id . "\n";
-            echo "Installments: " . $payment->payment_method->installments . "\n";
         }
     } else {
         echo "No payments found for this order.\n";
