@@ -46,9 +46,9 @@ final class OrderClient extends MercadoPagoClient
      * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
      * @throws \Exception if the request fails.
      */
-    public function capture(string $orderID, ?RequestOptions $request_options = null): Order
+    public function capture(string $order_id, ?RequestOptions $request_options = null): Order
     {
-        $response = parent::send(sprintf(self::URL_CAPTURE, $orderID), HttpMethod::POST, null, null, $request_options);
+        $response = parent::send(sprintf(self::URL_CAPTURE, $order_id), HttpMethod::POST, null, null, $request_options);
         $result = Serializer::deserializeFromJson(Order::class, $response->getContent());
         $result->setResponse($response);
         return $result;
