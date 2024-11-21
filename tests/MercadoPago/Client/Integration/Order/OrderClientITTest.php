@@ -70,10 +70,8 @@ final class OrderClientITTest extends TestCase
             $request_options = new RequestOptions();
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
 
-            // Cancela o pedido
             $order = $client->cancel($orderId, $request_options);
 
-            // Verificações das respostas
             $this->assertNotNull($order->id);
             $this->assertSame($orderId, $order->id);
             $this->assertSame("cancelled", $order->status);

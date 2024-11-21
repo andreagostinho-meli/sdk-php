@@ -74,10 +74,8 @@ final class OrderClientUnitTest extends BaseClient
             $client = new OrderClient();
             $orderId = "01JD7ZY8B7QF755N2D2WQ3XFNE";
 
-            // Cancela o pedido
             $order = $client->cancel($orderId, $request_options);
 
-            // Verificações das respostas
             $this->assertNotNull($order->id);
             $this->assertSame($orderId, $order->id);
             $this->assertSame("canceled", $order->status);
