@@ -39,7 +39,7 @@ try {
                     "payment_method" => [
                         "id" => "master",
                         "type" => "credit_card",
-                        "token" => "<SOME_UNIQUE_TOKEN>",
+                        "token" => "<CARD_TOKEN>",
                         "installments" => 1,
                     ]
                 ]
