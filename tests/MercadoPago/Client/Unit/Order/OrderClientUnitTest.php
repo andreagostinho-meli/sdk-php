@@ -73,7 +73,6 @@ final class OrderClientUnitTest extends BaseClient
         try {
             $client = new OrderClient();
             $orderId = "01JD7ZY8B7QF755N2D2WQ3XFNE";
-            $request_options = new RequestOptions();
 
             // Cancela o pedido
             $order = $client->cancel($orderId, $request_options);
