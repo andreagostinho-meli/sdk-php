@@ -40,7 +40,7 @@ final class OrderClient extends MercadoPagoClient
 
     /**
      * Method responsible for capturing an Order.
-     * @param string $orderID ID of Order.
+     * @param string $order_id Order ID.
      * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
      * @return \MercadoPago\Resources\Order Order created.
      * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
