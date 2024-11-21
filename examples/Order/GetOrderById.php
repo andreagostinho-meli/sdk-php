@@ -1,6 +1,6 @@
 <?php
 
-namespace Exemples\Order\GetOrderById;
+namespace Exemples\Order;
 
 // Step 1: Require the library from your Composer vendor folder
 require_once '../../vendor/autoload.php';
@@ -20,17 +20,16 @@ MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
 $client = new OrderClient();
 
 try {
-    $orderId = "<SOME_UNIQUE_ORDER_ID>";
+    $order_id = "<ORDER_ID>";
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Sandbox: <SOME_UNIQUE_VALUE>"]);
+    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
-    $order = $client->get($orderId, $request_options);
+    $order = $client->get($order_id, $request_options);
 
     echo "Order ID: " . $order->id . "\n";
     echo "Total Amount: " . $order->total_amount . "\n";
     echo "Status: " . $order->status . "\n";
 
-    // Verificando as transações
     if (isset($order->transactions) && isset($order->transactions->payments) && is_array($order->transactions->payments) && count($order->transactions->payments) > 0) {
         $payment = $order->transactions->payments[0];
 

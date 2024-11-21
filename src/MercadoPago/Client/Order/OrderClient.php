@@ -39,13 +39,13 @@ final class OrderClient extends MercadoPagoClient
     }
 
     /**
-     * Method responsible for obtaining order by id
+     * Method responsible for obtaining Order by ID
      *
-     * @param ind $id orderId
-     * @param \MercadoPago\Client\Common\RequestOptions metadata to customize the request
-     * @return \MercadoPago\Resources\Order response
-     * @throws \Exception an error if the request fails
-     * @throws \MercadoPago\Exceptions\MPApiException an error if the request fails
+     * @param string $order_id Order ID.
+     * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
+     * @return \MercadoPago\Resources\Order Order obtained
+     * @throws \MercadoPago\Exceptions\MPApiException an error if the request fails.
+     * * @throws \Exception an error if the request fails.
      */
     public function get(string  $id, ?RequestOptions $request_options = null): Order
     {

@@ -23,7 +23,7 @@
               "payment_method": {
                   "id": "master",
                   "type": "credit_card",
-                  "token": "6fa1cc12bb30405599c944b8adecbaee",
+                  "token": "card_token",
                   "issuer_id": "master",
                   "installments": 1
               }

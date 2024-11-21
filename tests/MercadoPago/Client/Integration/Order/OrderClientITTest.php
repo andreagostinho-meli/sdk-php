@@ -72,8 +72,6 @@ final class OrderClientITTest extends TestCase
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
             $order = $client->get($orderId, $request_options);
 
-
-            // Verificações das respostas
             $this->assertNotNull($order->id);
             $this->assertSame("01JD2P9GGXAPBDGG6YT90N77M3", $order->id);
             $this->assertSame("online", $order->type);
@@ -82,7 +80,6 @@ final class OrderClientITTest extends TestCase
             $this->assertSame("processed", $order->status);
             $this->assertSame("accredited", $order->status_detail);
             $this->assertSame("test_1731354550@testuser.com", $order->payer->email);
-
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
