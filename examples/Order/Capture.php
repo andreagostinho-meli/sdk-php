@@ -1,6 +1,6 @@
 <?php
 
-namespace Examples\Order\Capture;
+namespace Examples\Order;
 
 // Step 1: Require the library from your Composer vendor folder
 require_once '../../vendor/autoload.php';
