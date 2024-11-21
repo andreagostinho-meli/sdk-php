@@ -1,6 +1,6 @@
 <?php
 
-namespace Exemples\Order\CancelOrderById;
+namespace Exemples\Order;
 
 // Step 1: Require the library from your Composer vendor folder
 require_once '../../vendor/autoload.php';
@@ -20,13 +20,15 @@ MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
 $client = new OrderClient();
 
 $orderClient = new OrderClient();
-$orderId = "ID_DA_ORDEM_A_CANCELAR";
+$order_id = "<ORDER_ID>";
 try {
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Sandbox: true"]);
+    $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
-    $cancellationResponse = $orderClient->cancel($orderId, $request_options);
-    print_r($cancellationResponse);
+    $cancellationResponse = $orderClient->cancel($order_id, $request_options);
+    echo "Order ID: " . $cancellationResponse->id . "\n";
+    echo "Status: " . $cancellationResponse->status . "\n";
+
 } catch (\Exception $e) {
     // Trate qualquer erro aqui
     echo 'Erro ao cancelar a ordem: ' . $e->getMessage();

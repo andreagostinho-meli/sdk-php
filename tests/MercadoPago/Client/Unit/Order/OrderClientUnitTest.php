@@ -2,7 +2,9 @@
 
 namespace MercadoPago\Tests\Client\Unit\Order;
 
+use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Client\Order\OrderClient;
+use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Net\MPDefaultHttpClient;
 use MercadoPago\Tests\Client\Unit\Base\BaseClient;
@@ -64,5 +66,29 @@ final class OrderClientUnitTest extends BaseClient
             ]
         ];
         return $request;
+    }
+
+    private function testCancelOrderSuccess(): void
+    {
+        try {
+            $client = new OrderClient();
+            $orderId = "01JD7ZY8B7QF755N2D2WQ3XFNE";
+            $request_options = new RequestOptions();
+
+            // Cancela o pedido
+            $order = $client->cancel($orderId, $request_options);
+
+            // Verificações das respostas
+            $this->assertNotNull($order->id);
+            $this->assertSame($orderId, $order->id);
+            $this->assertSame("canceled", $order->status);
+        } catch (MPApiException $e) {
+            $apiResponse = $e->getApiResponse();
+            $statusCode = $apiResponse->getStatusCode();
+            $responseBody = json_encode($apiResponse->getContent());
+            $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+        } catch (\Exception $e) {
+            $this->fail("Exception: " . $e->getMessage());
+        }
     }
 }
