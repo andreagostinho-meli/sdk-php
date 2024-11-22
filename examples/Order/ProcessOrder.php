@@ -19,7 +19,6 @@ MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
 // Step 3: Initialize the API client
 $client = new OrderClient();
 
-$orderClient = new OrderClient();
 $order_id = "<ORDER_ID>";
 try {
     $request_options = new RequestOptions();
