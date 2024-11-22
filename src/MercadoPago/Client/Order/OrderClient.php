@@ -14,8 +14,8 @@ use MercadoPago\Serialization\Serializer;
 final class OrderClient extends MercadoPagoClient
 {
     private const URL = "/v1/orders";
-    private const URL_CAPTURE = self::URL_WITH_ID . '/capture';
     private const URL_WITH_ID = "/v1/orders/%s";
+    private const URL_CAPTURE = self::URL_WITH_ID . '/capture';
     private const URL_CANCEL = self::URL_WITH_ID . '/cancel';
 
     /** Default constructor. Uses the default http client used by the SDK or custom http client provided. */
