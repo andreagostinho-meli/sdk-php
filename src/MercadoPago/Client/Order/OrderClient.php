@@ -14,8 +14,8 @@ use MercadoPago\Serialization\Serializer;
 final class OrderClient extends MercadoPagoClient
 {
     private const URL = "/v1/orders";
-    private const URL_CAPTURE = self::URL_WITH_ID . '/capture';
     private const URL_WITH_ID = "/v1/orders/%s";
+    private const URL_CAPTURE = self::URL_WITH_ID . '/capture';
     private const URL_CANCEL = self::URL_WITH_ID . '/cancel';
     private const URL_PROCESS = self::URL_WITH_ID . '/process';
 
@@ -75,14 +75,14 @@ final class OrderClient extends MercadoPagoClient
     }
 
     /**
-     * Method responsible for canceling an existing order.
-     *
-     * @param string $order_id ID of the order to cancel.
-     * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
-     * @return \MercadoPago\Resources\Order response with cancellation details.
-     * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
-     * @throws \Exception if the request fails.
-     */
+ * Method responsible for canceling an existing Order.
+ *
+ * @param string $order_id ID of the Order to cancel.
+ * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
+ * @return \MercadoPago\Resources\Order response with cancellation details.
+ * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
+ * @throws \Exception if the request fails.
+ */
     public function cancel(string $order_id, ?RequestOptions $request_options = null): Order
     {
         $response = parent::send(sprintf(self::URL_CANCEL, $order_id), HttpMethod::POST, null, null, $request_options);
@@ -92,14 +92,14 @@ final class OrderClient extends MercadoPagoClient
     }
 
     /**
-     * Method responsible for processing an Order.
-     *
-     * @param string $order_id ID of the order to process.
-     * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
-     * @return \MercadoPago\Resources\Order response with processing details.
-     * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
-     * @throws \Exception if the request fails.
-     */
+    * Method responsible for processing an Order.
+    *
+    * @param string $order_id ID of the Order to process.
+    * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
+    * @return \MercadoPago\Resources\Order response with processing details.
+    * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
+    * @throws \Exception if the request fails.
+    */
     public function process(string $order_id, ?RequestOptions $request_options = null): Order
     {
         $response = parent::send(sprintf(self::URL_PROCESS, $order_id), HttpMethod::POST, null, null, $request_options);

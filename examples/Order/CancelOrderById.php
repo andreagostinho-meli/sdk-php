@@ -1,6 +1,6 @@
 <?php
 
-namespace Exemples\Order;
+namespace Examples\Order;
 
 // Step 1: Require the library from your Composer vendor folder
 require_once '../../vendor/autoload.php';
@@ -19,16 +19,20 @@ MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
 // Step 3: Initialize the API client
 $client = new OrderClient();
 
-$orderClient = new OrderClient();
 $order_id = "<ORDER_ID>";
 try {
     $request_options = new RequestOptions();
     $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
-    $cancellationResponse = $orderClient->cancel($order_id, $request_options);
-    echo "Order ID: " . $cancellationResponse->id . "\n";
-    echo "Status: " . $cancellationResponse->status . "\n";
+    $order = $orderClient->cancel($order_id, $request_options);
+    echo "Order ID: " . $order->id . "\n";
+    echo "Status: " . $order->status . "\n";
 
+} catch (MPApiException $e) {
+    echo "Status code: " . $e->getApiResponse()->getStatusCode() . "\n";
+    echo "Content: ";
+    var_dump($e->getApiResponse()->getContent());
+    echo "\n";
 } catch (\Exception $e) {
-    echo 'Erro ao cancelar a ordem: ' . $e->getMessage();
+    echo $e->getMessage();
 }

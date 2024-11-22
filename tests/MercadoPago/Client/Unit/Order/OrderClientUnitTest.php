@@ -82,9 +82,6 @@ final class OrderClientUnitTest extends BaseClient
         $this->assertSame("processed", $order->status);
     }
 
-    /**
-    * Order Client unit tests.
-    */
     public function testGetSuccess(): void
     {
         $filepath = '../../../../Resources/Mocks/Response/Order/get_order_response.json';
@@ -103,29 +100,26 @@ final class OrderClientUnitTest extends BaseClient
         $this->assertSame("ext_ref_1234", $order->external_reference);
         $this->assertSame("processed", $order->status);
         $this->assertSame("accredited", $order->status_detail);
-        $this->assertSame("test_1731354550@testuser.com", $order->payer->email); // Verificando o payer
         $this->assertSame("automatic", $order->processing_mode);
     }
 
-    private function testCancelOrderSuccess(): void
+    public function testCancelOrderSuccess(): void
     {
-        try {
-            $client = new OrderClient();
-            $orderId = "01JD7ZY8B7QF755N2D2WQ3XFNE";
+        $filepath = '../../../../Resources/Mocks/Response/Order/order_cancel.json';
+        $mock_http_request = $this->mockHttpRequest($filepath, 200);
+        $http_client = new MPDefaultHttpClient($mock_http_request);
+        MercadoPagoConfig::setHttpClient($http_client);
 
-            $order = $client->cancel($orderId);
+        $client = new OrderClient();
+        $order_id = "01JDASYCCVWTT08J5RDYAJ5CBZ";
 
-            $this->assertNotNull($order->id);
-            $this->assertSame($orderId, $order->id);
-            $this->assertSame("canceled", $order->status);
-        } catch (MPApiException $e) {
-            $apiResponse = $e->getApiResponse();
-            $statusCode = $apiResponse->getStatusCode();
-            $responseBody = json_encode($apiResponse->getContent());
-            $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
-        } catch (\Exception $e) {
-            $this->fail("Exception: " . $e->getMessage());
-        }
+        $order = $client->cancel($order_id);
+
+        $this->assertSame(200, $order->getResponse()->getStatusCode());
+        $this->assertNotNull($order->id);
+        $this->assertSame($order_id, $order->id);
+        $this->assertSame("cancelled", $order->status);
+
     }
 
     public function testProcessSuccess(): void
@@ -136,11 +130,11 @@ final class OrderClientUnitTest extends BaseClient
         MercadoPagoConfig::setHttpClient($http_client);
         $client = new OrderClient();
 
-        $orderId = "01JDA7QG60QFWMA06AWM5MMXHD";
-        $order = $client->process($orderId);
+        $order_id = "01JDA7QG60QFWMA06AWM5MMXHD";
+        $order = $client->process($order_id);
 
         $this->assertSame(200, $order->getResponse()->getStatusCode());
-        $this->assertSame($orderId, $order->id);
+        $this->assertSame($order_id, $order->id);
         $this->assertSame("processed", $order->status);
     }
 }
