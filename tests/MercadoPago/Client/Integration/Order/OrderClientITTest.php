@@ -147,14 +147,14 @@ final class OrderClientITTest extends TestCase
         try {
             $client = new OrderClient();
             // At each test run, it is important to use an order_id of an order that can be cancelled.
-            $orderId = "01JD82K0XV472DWVBF73H8NT6N";
+            $order_id = "01JD82K0XV472DWVBF73H8NT6N";
             $request_options = new RequestOptions();
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
 
-            $order = $client->cancel($orderId, $request_options);
+            $order = $client->cancel($order_id, $request_options);
 
             $this->assertNotNull($order->id);
-            $this->assertSame($orderId, $order->id);
+            $this->assertSame($order_id, $order->id);
             $this->assertSame("cancelled", $order->status);
 
         } catch (MPApiException $e) {
