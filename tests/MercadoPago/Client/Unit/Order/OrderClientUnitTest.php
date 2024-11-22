@@ -127,4 +127,20 @@ final class OrderClientUnitTest extends BaseClient
             $this->fail("Exception: " . $e->getMessage());
         }
     }
+
+    public function testProcessSuccess(): void
+    {
+        $filepath = '../../../../Resources/Mocks/Response/Order/order_process.json';
+        $mock_http_request = $this->mockHttpRequest($filepath, 200);
+        $http_client = new MPDefaultHttpClient($mock_http_request);
+        MercadoPagoConfig::setHttpClient($http_client);
+        $client = new OrderClient();
+
+        $orderId = "01JDA7QG60QFWMA06AWM5MMXHD";
+        $order = $client->process($orderId);
+
+        $this->assertSame(200, $order->getResponse()->getStatusCode());
+        $this->assertSame($orderId, $order->id);
+        $this->assertSame("processed", $order->status);
+    }
 }

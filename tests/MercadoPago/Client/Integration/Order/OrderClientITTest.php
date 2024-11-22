@@ -166,4 +166,27 @@ final class OrderClientITTest extends TestCase
             $this->fail("Exception: " . $e->getMessage());
         }
     }
+
+    public function testProcessSuccess(): void
+    {
+        try {
+            $client = new OrderClient();
+            $orderId = "01HRYFWNYRE1MR1E60MW3X0T2P";
+            $request_options = new RequestOptions();
+            $request_options->setCustomHeaders(["X-Sandbox: true"]);
+
+            $order = $client->process($orderId, $request_options);
+
+            $this->assertNotNull($order->id);
+            $this->assertSame($orderId, $order->id);
+            $this->assertSame("processed", $order->status);
+        } catch (MPApiException $e) {
+            $apiResponse = $e->getApiResponse();
+            $statusCode = $apiResponse->getStatusCode();
+            $responseBody = json_encode($apiResponse->getContent());
+            $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+        } catch (\Exception $e) {
+            $this->fail("Exception: " . $e->getMessage());
+        }
+    }
 }
