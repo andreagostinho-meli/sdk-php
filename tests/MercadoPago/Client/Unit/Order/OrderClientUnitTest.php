@@ -119,7 +119,6 @@ final class OrderClientUnitTest extends BaseClient
         $this->assertNotNull($order->id);
         $this->assertSame($order_id, $order->id);
         $this->assertSame("cancelled", $order->status);
-
     }
 
     public function testProcessSuccess(): void

@@ -24,7 +24,7 @@ try {
     $request_options = new RequestOptions();
     $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
-    $order = $orderClient->process($order_id, $request_options);
+    $order = $client->process($order_id, $request_options);
     echo "Order ID: " . $order->id . "\n";
     echo "Status: " . $order->status . "\n";
 
@@ -34,5 +34,5 @@ try {
     var_dump($e->getApiResponse()->getContent());
     echo "\n";
 } catch (\Exception $e) {
-    echo 'Erro ao processar a ordem: ' . $e->getMessage();
+    echo $e->getMessage();
 }
