@@ -88,7 +88,6 @@ final class OrderClient extends MercadoPagoClient
         $response = parent::send(sprintf(self::URL_CANCEL, $order_id), HttpMethod::POST, null, null, $request_options);
         $result = Serializer::deserializeFromJson(Order::class, $response->getContent());
         $result->setResponse($response);
-        print_r($result);
         return $result;
     }
 

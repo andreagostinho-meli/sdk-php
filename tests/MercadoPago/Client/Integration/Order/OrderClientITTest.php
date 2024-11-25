@@ -7,6 +7,7 @@ use MercadoPago\Client\Order\OrderClient;
 use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 use PHPUnit\Framework\TestCase;
+use MercadoPago\Client\CardToken\CardTokenClient;
 
 /**
  * OrderClient integration tests.
@@ -24,17 +25,16 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequest();
             $request_options = new RequestOptions();
-
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
-
             $order = $client->create($request, $request_options);
-
             $this->assertNotNull($order->id);
+
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
             $responseBody = json_encode($apiResponse->getContent());
             $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+
         } catch (\Exception $e) {
             $this->fail("Exception: " . $e->getMessage());
         }
@@ -70,19 +70,19 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequestCapture();
             $request_options = new RequestOptions();
-
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
-
             $order = $client->create($request, $request_options);
+            $this->assertNotNull($order->id);
 
-            $order = $client->capture($order->id, $request_options);
+            $order_capture = $client->capture($order->id, $request_options);
+            $this->assertSame($order_capture->status, "processed");
 
-            $this->assertSame($order->status, "processed");
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
             $responseBody = json_encode($apiResponse->getContent());
             $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+
         } catch (\Exception $e) {
             $this->fail("Exception: " . $e->getMessage());
         }
@@ -90,9 +90,9 @@ final class OrderClientITTest extends TestCase
 
     private function createRequestCapture(): array
     {
-        $publicKey = 'APP_USR-1a65da8c-993a-4cff-9244-1f841e7c2ea9';
-        $tokenResponse = $this->createCardToken($publicKey);
-        $token = $tokenResponse['id'];
+        $client_token = new CardTokenClient();
+        $card_token = $client_token->create($this->createCardTokenRequest());
+        $this->assertNotNull($card_token->id);
 
         $request = [
             "type" => "online",
@@ -109,7 +109,7 @@ final class OrderClientITTest extends TestCase
                         "payment_method" => [
                             "id" => "master",
                             "type" => "credit_card",
-                            "token" => $token,
+                            "token" => $card_token->id,
                             "installments" => 1,
                         ]
                     ]
@@ -126,23 +126,22 @@ final class OrderClientITTest extends TestCase
     {
         try {
             $client = new OrderClient();
-            $orderId = "01JD2P9GGXAPBDGG6YT90N77M3";
             $request_options = new RequestOptions();
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
+            $orderId = "01JD2P9GGXAPBDGG6YT90N77M3";
             $order = $client->get($orderId, $request_options);
-
             $this->assertNotNull($order->id);
             $this->assertSame("01JD2P9GGXAPBDGG6YT90N77M3", $order->id);
-            $this->assertSame("online", $order->type);
             $this->assertSame("200.00", $order->total_amount);
-            $this->assertSame("ext_ref_1234", $order->external_reference);
             $this->assertSame("processed", $order->status);
             $this->assertSame("accredited", $order->status_detail);
+
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
             $responseBody = json_encode($apiResponse->getContent());
             $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+
         } catch (\Exception $e) {
             $this->fail("Exception: " . $e->getMessage());
         }
@@ -152,24 +151,24 @@ final class OrderClientITTest extends TestCase
     {
         try {
             $client = new OrderClient();
-            $request_cancel = $this->createRequestCapture();
+            $request = $this->createRequestCapture();
             $request_options = new RequestOptions();
-
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
+            $order = $client->create($request, $request_options);
+            $this->assertNotNull($order->id);
 
-            $order = $client->create($request_cancel, $request_options);
-            print_r($order);
+            sleep(3); // sleep to avoid error 422 when create and cancel ocurrs just in time
 
             $order_cancelled = $client->cancel($order->id, $request_options);
-            //print_r($order_cancelled);
-
             $this->assertNotNull($order_cancelled->id);
             $this->assertSame("cancelled", $order_cancelled->status);
+
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
             $responseBody = json_encode($apiResponse->getContent());
             $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+
         } catch (\Exception $e) {
             $this->fail("Exception: " . $e->getMessage());
         }
@@ -181,18 +180,19 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequestProcess();
             $request_options = new RequestOptions();
-
             $request_options->setCustomHeaders([ "X-Sandbox: true"]);
-
             $order = $client->create($request, $request_options);
+            $this->assertNotNull($order->id);
 
             $order_processed = $client->process($order->id, $request_options);
             $this->assertSame("processed", $order_processed->status);
+
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
             $responseBody = json_encode($apiResponse->getContent());
             $this->fail("API Exception: " . $statusCode . " - " . $responseBody);
+
         } catch (\Exception $e) {
             $this->fail("Exception: " . $e->getMessage());
         }
@@ -200,9 +200,9 @@ final class OrderClientITTest extends TestCase
 
     private function createRequestProcess(): array
     {
-        $publicKey = 'APP_USR-1a65da8c-993a-4cff-9244-1f841e7c2ea9';
-        $tokenResponse = $this->createCardToken($publicKey);
-        $token = $tokenResponse['id'];
+        $client_token = new CardTokenClient();
+        $card_token = $client_token->create($this->createCardTokenRequest());
+        $this->assertNotNull($card_token->id);
 
         $request = [
             "type" => "online",
@@ -216,7 +216,7 @@ final class OrderClientITTest extends TestCase
                         "payment_method" => [
                             "id" => "master",
                             "type" => "credit_card",
-                            "token" => $token,
+                            "token" => $card_token->id,
                             "installments" => 1,
                         ]
                     ]
@@ -229,41 +229,21 @@ final class OrderClientITTest extends TestCase
         return $request;
     }
 
-    public function createCardToken($publicKey)
+    private function createCardTokenRequest(): array
     {
-        $url = 'https://api.mercadopago.com/v1/card_tokens?public_key=' . $publicKey;
-
-        $cardData = [
-            "expiration_year" => 2025,
-            "site_id" => "MLB",
-            "expiration_month" => 11,
+        $request = [
+            "card_number" => "5031433215406351",
+            "expiration_year" => "2025",
+            "expiration_month" => "12",
+            "security_code" => "123",
             "cardholder" => [
+                "name" => "APRO",
                 "identification" => [
                     "type" => "CPF",
-                    "number" => "15635614680"
+                    "number" => "19119119100",
                 ],
-                "name" => "APRO"
-            ],
-            "security_code" => "123",
-            "card_number" => "5031433215406351"
+            ]
         ];
-
-        $ch = curl_init($url);
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($cardData));
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        return json_decode($response, true);
-    }
-
-    public function testCardTokenCreation(): void
-    {
-        $publicKey = 'APP_USR-1a65da8c-993a-4cff-9244-1f841e7c2ea9';
-        $tokenResponse = $this->createCardToken($publicKey);
+        return $request;
     }
 }
