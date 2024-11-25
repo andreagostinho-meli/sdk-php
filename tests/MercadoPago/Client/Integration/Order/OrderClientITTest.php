@@ -126,15 +126,18 @@ final class OrderClientITTest extends TestCase
     {
         try {
             $client = new OrderClient();
+            $request = $this->createRequest();
             $request_options = new RequestOptions();
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
-            $orderId = "01JD2P9GGXAPBDGG6YT90N77M3";
-            $order = $client->get($orderId, $request_options);
+            $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
-            $this->assertSame("01JD2P9GGXAPBDGG6YT90N77M3", $order->id);
-            $this->assertSame("200.00", $order->total_amount);
-            $this->assertSame("processed", $order->status);
-            $this->assertSame("accredited", $order->status_detail);
+
+            $order_get = $client->get($order->id, $request_options);
+            $this->assertNotNull($order_get->id);
+            $this->assertSame($order->id, $order_get->id);
+            $this->assertSame($order->total_amount, $order_get->total_amount);
+            $this->assertSame($order->status, $order_get->status);
+            $this->assertSame($order->status_detail, $order_get->status_detail);
 
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
@@ -178,7 +181,7 @@ final class OrderClientITTest extends TestCase
     {
         try {
             $client = new OrderClient();
-            $request = $this->createRequestProcess();
+            $request = $this->createOrderProcess();
             $request_options = new RequestOptions();
             $request_options->setCustomHeaders([ "X-Sandbox: true"]);
             $order = $client->create($request, $request_options);
@@ -198,7 +201,7 @@ final class OrderClientITTest extends TestCase
         }
     }
 
-    private function createRequestProcess(): array
+    private function createOrderProcess(): array
     {
         $client_token = new CardTokenClient();
         $card_token = $client_token->create($this->createCardTokenRequest());
@@ -226,6 +229,7 @@ final class OrderClientITTest extends TestCase
                 "email" => "test_1731350184@testuser.com",
             ]
         ];
+
         return $request;
     }
 
