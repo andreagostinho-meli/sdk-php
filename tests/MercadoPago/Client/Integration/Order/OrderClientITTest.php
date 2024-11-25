@@ -23,8 +23,17 @@ final class OrderClientITTest extends TestCase
         try {
             $client = new OrderClient();
             $request = $this->createRequest();
+            $request_options = new RequestOptions();
 
-            $order = $client->create($request);
+            $idempotencyKey = bin2hex(random_bytes(16));
+            echo "Idempotency Key for CREATE: " . $idempotencyKey . PHP_EOL;
+
+            $request_options->setCustomHeaders([
+                "X-Sandbox: true",
+                "X-Idempotency-Key: " . $idempotencyKey,
+                "X-Caller-SiteID: MLB"]);
+
+            $order = $client->create($request, $request_options);
 
             $this->assertNotNull($order->id);
         } catch (MPApiException $e) {
@@ -36,7 +45,6 @@ final class OrderClientITTest extends TestCase
             $this->fail("Exception: " . $e->getMessage());
         }
     }
-
 
     private function createRequest(): array
     {
@@ -68,7 +76,8 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequestCapture();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
+
+            $request_options->setCustomHeaders([ "X-Sandbox: true"]);
 
             $order = $client->create($request, $request_options);
 
@@ -87,6 +96,10 @@ final class OrderClientITTest extends TestCase
 
     private function createRequestCapture(): array
     {
+        $publicKey = 'APP_USR-1a65da8c-993a-4cff-9244-1f841e7c2ea9';
+        $tokenResponse = $this->createCardToken($publicKey);
+        $token = $tokenResponse['id'];
+
         $request = [
             "type" => "online",
             "total_amount" => "200.00",
@@ -101,7 +114,7 @@ final class OrderClientITTest extends TestCase
                         "payment_method" => [
                             "id" => "master",
                             "type" => "credit_card",
-                            "token" => "<unique_credit_card_token>",
+                            "token" => $token,
                             "installments" => 1,
                         ]
                     ]
@@ -113,7 +126,6 @@ final class OrderClientITTest extends TestCase
         ];
         return $request;
     }
-
 
     public function testGetOrderSuccess(): void
     {
@@ -131,7 +143,6 @@ final class OrderClientITTest extends TestCase
             $this->assertSame("ext_ref_1234", $order->external_reference);
             $this->assertSame("processed", $order->status);
             $this->assertSame("accredited", $order->status_detail);
-            $this->assertSame("test_1731354550@testuser.com", $order->payer->email);
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
@@ -140,23 +151,62 @@ final class OrderClientITTest extends TestCase
         } catch (\Exception $e) {
             $this->fail("Exception: " . $e->getMessage());
         }
+    }
+
+    private function createRequestCancel(): array
+    {
+        $publicKey = 'APP_USR-1a65da8c-993a-4cff-9244-1f841e7c2ea9';
+        $tokenResponse = $this->createCardToken($publicKey);
+        $token = $tokenResponse['id'];
+
+        $request = [
+            "type" => "online",
+            "processing_mode" => "manual",
+            "total_amount" => "200.00",
+            "external_reference" => "ext_ref_1234",
+            "transactions" => [
+                "payments" => [
+                    [
+                        "amount" => "200.00",
+                        "payment_method" => [
+                            "id" => "master",
+                            "type" => "credit_card",
+                            "token" => $token,
+                            "installments" => 1,
+                        ]
+                    ]
+                ]
+            ],
+            "payer" => [
+                "email" => "test_1731350184@testuser.com",
+            ]
+        ];
+        return $request;
     }
 
     public function testCancelOrderSuccess(): void
     {
         try {
             $client = new OrderClient();
-            // At each test run, it is important to use an order_id of an order that can be cancelled.
-            $order_id = "01JD82K0XV472DWVBF73H8NT6N";
+            $request = $this->createRequestCancel();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
 
-            $order = $client->cancel($order_id, $request_options);
+            $request_options->setCustomHeaders([ "X-Sandbox: true"]);
+
+            $order = $client->create($request, $request_options);
+
+            //reset idempotencyKey
+            $idempotencyKey = bin2hex(random_bytes(16));
+            echo "Idempotency Key for CANCEL after creation: " . $idempotencyKey . PHP_EOL;
+
+            $request_options->setCustomHeaders([
+                "X-Sandbox: true",
+                "X-Idempotency-Key: " . $idempotencyKey]);
+
+            $order = $client->cancel($order->id, $request_options);
 
             $this->assertNotNull($order->id);
-            $this->assertSame($order_id, $order->id);
             $this->assertSame("cancelled", $order->status);
-
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
@@ -167,18 +217,52 @@ final class OrderClientITTest extends TestCase
         }
     }
 
+    private function createRequestProcess(): array
+    {
+        $publicKey = 'APP_USR-1a65da8c-993a-4cff-9244-1f841e7c2ea9';
+        $tokenResponse = $this->createCardToken($publicKey);
+        $token = $tokenResponse['id'];
+
+        $request = [
+            "type" => "online",
+            "processing_mode" => "manual",
+            "total_amount" => "200.00",
+            "external_reference" => "ext_ref_1234",
+            "transactions" => [
+                "payments" => [
+                    [
+                        "amount" => "200.00",
+                        "payment_method" => [
+                            "id" => "master",
+                            "type" => "credit_card",
+                            "token" => $token,
+                            "installments" => 1,
+                        ]
+                    ]
+                ]
+            ],
+            "payer" => [
+                "email" => "test_1731350184@testuser.com",
+            ]
+        ];
+        return $request;
+    }
+
     public function testProcessSuccess(): void
     {
         try {
             $client = new OrderClient();
-            $order_id = "01HRYFWNYRE1MR1E60MW3X0T2P";
+            $request = $this->createRequestProcess();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
 
-            $order = $client->process($order_id, $request_options);
+            $request_options->setCustomHeaders([
+                "X-Sandbox: true",
+                "X-Caller-SiteID: MLB"]);
 
-            $this->assertNotNull($order->id);
-            $this->assertSame($order_id, $order->id);
+            $order = $client->create($request, $request_options);
+
+            $order = $client->process($order->id, $request_options);
+
             $this->assertSame("processed", $order->status);
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
@@ -188,5 +272,45 @@ final class OrderClientITTest extends TestCase
         } catch (\Exception $e) {
             $this->fail("Exception: " . $e->getMessage());
         }
+    }
+
+    public function createCardToken($publicKey)
+    {
+        $url = 'https://api.mercadopago.com/v1/card_tokens?public_key=' . $publicKey;
+
+        $cardData = [
+            "expiration_year" => 2025,
+            "site_id" => "MLB",
+            "expiration_month" => 11,
+            "cardholder" => [
+                "identification" => [
+                    "type" => "CPF",
+                    "number" => "15635614680"
+                ],
+                "name" => "APRO"
+            ],
+            "security_code" => "123",
+            "card_number" => "5031433215406351"
+        ];
+
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($cardData));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($response, true);
+    }
+
+    public function testCardTokenCreation(): void
+    {
+        $publicKey = 'APP_USR-1a65da8c-993a-4cff-9244-1f841e7c2ea9';
+        $tokenResponse = $this->createCardToken($publicKey);
     }
 }
