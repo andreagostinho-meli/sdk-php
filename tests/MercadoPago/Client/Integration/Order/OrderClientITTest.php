@@ -207,7 +207,7 @@ final class OrderClientITTest extends TestCase
         $card_token = $client_token->create($this->createCardTokenRequest());
         $this->assertNotNull($card_token->id);
 
-        $request = [
+        return[
             "type" => "online",
             "processing_mode" => "manual",
             "total_amount" => "200.00",
@@ -229,13 +229,11 @@ final class OrderClientITTest extends TestCase
                 "email" => "test_1731350184@testuser.com",
             ]
         ];
-
-        return $request;
     }
 
     private function createCardTokenRequest(): array
     {
-        $request = [
+        return [
             "card_number" => "5031433215406351",
             "expiration_year" => "2025",
             "expiration_month" => "12",
@@ -248,6 +246,5 @@ final class OrderClientITTest extends TestCase
                 ],
             ]
         ];
-        return $request;
     }
 }
