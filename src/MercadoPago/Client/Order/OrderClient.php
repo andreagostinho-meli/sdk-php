@@ -92,6 +92,7 @@ final class OrderClient extends MercadoPagoClient
         return $result;
     }
 
+
     /**
     * Method responsible for processing an Order.
     *

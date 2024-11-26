@@ -1,6 +1,6 @@
 <?php
 
-namespace Exemples\Order;
+namespace Examples\Order;
 
 // Step 1: Require the library from your Composer vendor folder
 require_once '../../vendor/autoload.php';
@@ -27,7 +27,6 @@ try {
     $order = $client->process($order_id, $request_options);
     echo "Order ID: " . $order->id . "\n";
     echo "Status: " . $order->status . "\n";
-
 } catch (MPApiException $e) {
     echo "Status code: " . $e->getApiResponse()->getStatusCode() . "\n";
     echo "Content: ";
