@@ -6,6 +6,8 @@ use MercadoPago\Client\Order\OrderTransactionClient;
 use MercadoPago\Client\Order\Transaction\CreateTransactionRequest;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Net\MPDefaultHttpClient;
+use MercadoPago\Net\MPHttpClient;
+use MercadoPago\Net\MPResponse;
 use MercadoPago\Tests\Client\Unit\Base\BaseClient;
 
 /**
@@ -13,6 +15,15 @@ use MercadoPago\Tests\Client\Unit\Base\BaseClient;
  */
 final class OrderTransactionClientUnitTest extends BaseClient
 {
+    private $httpClientMock;
+    private $client;
+
+    protected function setUp(): void
+    {
+        $this->httpClientMock = $this->createMock(MPHttpClient::class);
+        $this->client = new OrderTransactionClient($this->httpClientMock);
+    }
+
     public function testCreateSuccess(): void
     {
         $filepath = '../../../../Resources/Mocks/Response/Order/transaction.json';
@@ -47,5 +58,30 @@ final class OrderTransactionClientUnitTest extends BaseClient
             ],
         ];
         return $request;
+    }
+
+    public function testDeleteSucess(): void
+    {
+        $order_id = "1234321";
+        $transaction_id = "pay_3456789";
+        $expectedResponse = new MPResponse(204, []);
+
+        $this->httpClientMock->method('send')->willReturn($expectedResponse);
+        $response = $this->client->deleteTransaction($order_id, $transaction_id);
+
+        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertEmpty($response->getContent());
+    }
+
+    public function testDeleteErrorNotFound()
+    {
+        $order_id = "1234321";
+        $transaction_id = "pay_3456789";
+        $expectedResponse = new MPResponse(404, ['Transaction not found.']);
+
+        $this->httpClientMock->method('send')->willReturn($expectedResponse);
+        $response = $this->client->deleteTransaction($order_id, $transaction_id);
+
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }
