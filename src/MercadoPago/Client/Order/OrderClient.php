@@ -9,7 +9,6 @@ use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Net\HttpMethod;
 use MercadoPago\Net\MPHttpClient;
 use MercadoPago\Serialization\Serializer;
-use MercadoPago\Net\MPResponse;
 
 /** Client responsible for performing Order actions. */
 final class OrderClient extends MercadoPagoClient
@@ -19,7 +18,7 @@ final class OrderClient extends MercadoPagoClient
     private const URL_CAPTURE = self::URL_WITH_ID . '/capture';
     private const URL_CANCEL = self::URL_WITH_ID . '/cancel';
     private const URL_PROCESS = self::URL_WITH_ID . '/process';
-    private const URL_DELETE = self::URL_WITH_ID . '/transactions/%s' ;
+
 
     /** Default constructor. Uses the default http client used by the SDK or custom http client provided. */
     public function __construct(?MPHttpClient $MPHttpClient = null)
@@ -109,24 +108,5 @@ final class OrderClient extends MercadoPagoClient
         $result = Serializer::deserializeFromJson(Order::class, $response->getContent());
         $result->setResponse($response);
         return $result;
-    }
-
-    /**
-     * Method responsible for creating transactions for an Order.
-     * @param string $order_id Order ID.
-     * @param string $transaction_id Transaction ID.
-     * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
-     * @return Response
-     * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
-     * @throws \Exception if the request fails.
-     */
-    public function deleteTransaction(string $order_id, string $transaction_id, ?RequestOptions $request_options = null): MPResponse
-    {
-        $path = sprintf(self::URL_DELETE, $order_id, $transaction_id);
-        $response = parent::send($path, HttpMethod::DELETE, null, null, $request_options);
-        if ($response->getStatusCode() === 204) {
-            return new MPResponse(204, []);
-        }
-        return new MPResponse($response->getStatusCode(), $response->getContent());
     }
 }
