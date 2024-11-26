@@ -27,7 +27,6 @@ try {
     $order = $client->cancel($order_id, $request_options);
     echo "Order ID: " . $order->id . "\n";
     echo "Status: " . $order->status . "\n";
-
 } catch (MPApiException $e) {
     echo "Status code: " . $e->getApiResponse()->getStatusCode() . "\n";
     echo "Content: ";

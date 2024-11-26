@@ -160,7 +160,7 @@ final class OrderClientITTest extends TestCase
             $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
 
-            sleep(3); // sleep to avoid error 422 when create and cancel ocurrs just in time
+            sleep(3); // sleep to avoid error 422 when create and cancel occurrs just in time
 
             $order_cancelled = $client->cancel($order->id, $request_options);
             $this->assertNotNull($order_cancelled->id);
@@ -183,7 +183,7 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createOrderProcess();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders([ "X-Sandbox: true"]);
+            $request_options->setCustomHeaders(["X-Sandbox: true"]);
             $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
 
