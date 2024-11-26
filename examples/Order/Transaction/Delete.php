@@ -2,6 +2,8 @@
 
 namespace Examples\Order\Transaction;
 
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 // Step 1: Require the library from your Composer vendor folder
 require_once '../../../vendor/autoload.php';
 
@@ -36,7 +38,7 @@ try {
                   "payment_method" => [
                       "id" => "master",
                       "type" => "credit_card",
-                      "token" => "7bd369f503ba958e652d0761fe8fa215",
+                      "token" => "699419faca6def0fdc98743f4e9f72f8",
                       "installments" => 1,
                   ]
               ]
@@ -44,28 +46,23 @@ try {
       ],
 ];
     $request_options = new RequestOptions();
-    $request_options->setCustomHeaders(["X-Idempotency-Key: 765678765", "X-Sandbox: true"]);
-
+    $request_options->setCustomHeaders(["X-Idempotency-Key: 141221198ygh77234432", "X-Sandbox: true"]);
     $order = $client->create($request, $request_options);
-    echo "Order ID:" . $order->id . "\n";
-    echo "Order" . $order->status . "\n";
     $transaction_id = $order->transactions->payments[0]->id;
-    echo "Transaction ID: " . $transaction_id . "\n";
+    $order_id = $order->id;
 
-    $request_options->setCustomHeaders(["X-Idempotency-Key: 0987654", "X-Sandbox: true"]);
-    $response = $client->deleteTransaction($order->id, $transaction_id, $request_options);
-    if ($response->getStatusCode() === 204) {
-        echo "Transaction deleted successfully. HTTP Status Code: " . $response->getStatusCode() . "\n";
+    $request_options->setCustomHeaders(["X-Idempotency-Key: 141221116609876567", "X-Sandbox: true"]);
+    $response = $client->deleteTransaction($order_id, $transaction_id, $request_options);
+    if ($response === null || $response->getStatusCode() === 204) {
+        echo "Transaction deleted successfully. HTTP Status Code: 204\n";
     } else {
-        echo "Error: " . $response->getContent() . "\n";
-        echo "HTTP Status Code: " . $response->getStatusCode() . "\n";
+        echo "Transaction deletion failed with status: " . $response->getStatusCode() . "\n";
+        echo "Response: " . var_dump($response->getContent()) . "\n";
     }
-
 } catch (MPApiException $e) {
-    echo "Status code: " . $e->getApiResponse()->getStatusCode() . "\n";
+    echo "Error: " . $e->getApiResponse()->getStatusCode() . "\n";
     echo "Content: ";
     var_dump($e->getApiResponse()->getContent());
-    echo "\n";
 } catch (\Exception $e) {
     echo $e->getMessage();
 }
