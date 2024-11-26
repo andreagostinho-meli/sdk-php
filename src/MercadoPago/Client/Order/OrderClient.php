@@ -9,6 +9,7 @@ use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Net\HttpMethod;
 use MercadoPago\Net\MPHttpClient;
 use MercadoPago\Serialization\Serializer;
+use MercadoPago\Net\MPResponse;
 
 /** Client responsible for performing Order actions. */
 final class OrderClient extends MercadoPagoClient
@@ -119,19 +120,13 @@ final class OrderClient extends MercadoPagoClient
      * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
      * @throws \Exception if the request fails.
      */
-    public function deleteTransaction(string $order_id, string $transaction_id, ?RequestOptions $request_options = null)
+    public function deleteTransaction(string $order_id, string $transaction_id, ?RequestOptions $request_options = null): MPResponse
     {
         $path = sprintf(self::URL_DELETE, $order_id, $transaction_id);
         $response = parent::send($path, HttpMethod::DELETE, null, null, $request_options);
-        return $response;
-
-        $response = $client->deleteTransaction($order->id, $transaction_id, $request_options);
         if ($response->getStatusCode() === 204) {
-            echo "Transaction deleted successfully. HTTP Status Code: " . $response->getStatusCode() . "\n";
-        } else {
-            // Exibir erro, caso contrário
-            echo "Error: " . $response->getContent() . "\n";
-            echo "HTTP Status Code: " . $response->getStatusCode() . "\n";
+            return new MPResponse(204, []);
         }
+        return new MPResponse($response->getStatusCode(), $response->getContent());
     }
 }

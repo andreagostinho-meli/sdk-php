@@ -43,30 +43,24 @@ try {
           ]
       ],
 ];
-
-    // Step 5: Create the request options, setting X-Idempotency-Key
     $request_options = new RequestOptions();
     $request_options->setCustomHeaders(["X-Idempotency-Key: 765678765", "X-Sandbox: true"]);
 
-    /// Step 6: Create the order
     $order = $client->create($request, $request_options);
     echo "Order ID:" . $order->id . "\n";
     echo "Order" . $order->status . "\n";
     $transaction_id = $order->transactions->payments[0]->id;
     echo "Transaction ID: " . $transaction_id . "\n";
 
-    // step 7: Delete the transaction
     $request_options->setCustomHeaders(["X-Idempotency-Key: 0987654", "X-Sandbox: true"]);
     $response = $client->deleteTransaction($order->id, $transaction_id, $request_options);
     if ($response->getStatusCode() === 204) {
         echo "Transaction deleted successfully. HTTP Status Code: " . $response->getStatusCode() . "\n";
     } else {
-        // Exibir erro, caso contrário
         echo "Error: " . $response->getContent() . "\n";
         echo "HTTP Status Code: " . $response->getStatusCode() . "\n";
     }
 
-    // Step 8: Handle exceptions
 } catch (MPApiException $e) {
     echo "Status code: " . $e->getApiResponse()->getStatusCode() . "\n";
     echo "Content: ";
