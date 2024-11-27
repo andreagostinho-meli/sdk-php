@@ -98,11 +98,12 @@ final class OrderTransactionClientUnitTest extends BaseClient
     {
         $order_id = "1234321";
         $transaction_id = "pay_3456789";
-        $expectedResponse = new MPResponse(404, ['Transaction not found.']);
+        $expectedResponse = new MPResponse(404, ['Order not found.']);
 
         $this->httpClientMock->method('send')->willReturn($expectedResponse);
         $response = $this->client->deleteTransaction($order_id, $transaction_id);
 
         $this->assertEquals(404, $response->getStatusCode());
+        print_r($response);
     }
 }
