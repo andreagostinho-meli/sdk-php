@@ -19,7 +19,6 @@ final class OrderClient extends MercadoPagoClient
     private const URL_CANCEL = self::URL_WITH_ID . '/cancel';
     private const URL_PROCESS = self::URL_WITH_ID . '/process';
 
-
     /** Default constructor. Uses the default http client used by the SDK or custom http client provided. */
     public function __construct(?MPHttpClient $MPHttpClient = null)
     {
@@ -76,14 +75,14 @@ final class OrderClient extends MercadoPagoClient
     }
 
     /**
- * Method responsible for canceling an existing Order.
- *
- * @param string $order_id ID of the Order to cancel.
- * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
- * @return \MercadoPago\Resources\Order response with cancellation details.
- * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
- * @throws \Exception if the request fails.
- */
+     * Method responsible for canceling an existing Order.
+     *
+     * @param string $order_id ID of the Order to cancel.
+     * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
+     * @return \MercadoPago\Resources\Order response with cancellation details.
+     * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
+     * @throws \Exception if the request fails.
+     */
     public function cancel(string $order_id, ?RequestOptions $request_options = null): Order
     {
         $response = parent::send(sprintf(self::URL_CANCEL, $order_id), HttpMethod::POST, null, null, $request_options);
@@ -91,7 +90,6 @@ final class OrderClient extends MercadoPagoClient
         $result->setResponse($response);
         return $result;
     }
-
 
     /**
     * Method responsible for processing an Order.

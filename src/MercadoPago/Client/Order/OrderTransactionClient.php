@@ -63,7 +63,7 @@ final class OrderTransactionClient extends MercadoPagoClient
     }
 
     /**
-     * Method responsible for creating transactions for an Order.
+     * Method responsible for deleting transactions for an Order.
      * @param string $order_id Order ID.
      * @param string $transaction_id Transaction ID.
      * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
