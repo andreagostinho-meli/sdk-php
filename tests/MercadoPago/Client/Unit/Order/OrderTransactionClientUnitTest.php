@@ -87,7 +87,7 @@ final class OrderTransactionClientUnitTest extends BaseClient
         $expectedResponse = new MPResponse(204, []);
 
         $this->httpClientMock->method('send')->willReturn($expectedResponse);
-        $response = $this->client->deleteTransaction($order_id, $transaction_id);
+        $response = $this->client->delete($order_id, $transaction_id);
 
         $this->assertEquals(204, $response->getStatusCode());
         $this->assertEmpty($response->getContent());
@@ -100,9 +100,8 @@ final class OrderTransactionClientUnitTest extends BaseClient
         $expectedResponse = new MPResponse(404, ['Order not found.']);
 
         $this->httpClientMock->method('send')->willReturn($expectedResponse);
-        $response = $this->client->deleteTransaction($order_id, $transaction_id);
+        $response = $this->client->delete($order_id, $transaction_id);
 
         $this->assertEquals(404, $response->getStatusCode());
-        print_r($response);
     }
 }

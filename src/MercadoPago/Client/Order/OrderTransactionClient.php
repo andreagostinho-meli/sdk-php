@@ -62,7 +62,7 @@ final class OrderTransactionClient extends MercadoPagoClient
     }
 
     /**
-     * Method responsible for deleting transactions for an Order.
+     * Method responsible for deleting a transaction of an Order.
      * @param string $order_id Order ID.
      * @param string $transaction_id Transaction ID.
      * @param \MercadoPago\Client\Common\RequestOptions request options to be sent.
@@ -70,13 +70,9 @@ final class OrderTransactionClient extends MercadoPagoClient
      * @throws \MercadoPago\Exceptions\MPApiException if the request fails.
      * @throws \Exception if the request fails.
      */
-    public function deleteTransaction(string $order_id, string $transaction_id, ?RequestOptions $request_options = null): MPResponse
+    public function delete(string $order_id, string $transaction_id, ?RequestOptions $request_options = null): MPResponse
     {
         $path = sprintf(self::URL_WITH_ID, $order_id, $transaction_id);
-        $response = parent::send($path, HttpMethod::DELETE, null, null, $request_options);
-        if ($response->getStatusCode() === 204) {
-            return new MPResponse(204, []);
-        }
-        return new MPResponse($response->getStatusCode(), $response->getContent());
+        return parent::send($path, HttpMethod::DELETE, null, null, $request_options);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace Examples\Order\Transaction;
 
-error_reporting(E_ALL & ~E_DEPRECATED);
-
 // Step 1: Require the library from your Composer vendor folder
 require_once '../../../vendor/autoload.php';
 
@@ -24,7 +22,7 @@ $client = new OrderClient();
 $client_transactions = new OrderTransactionClient();
 
 try {
-    // Step 4: Create the request array
+    // Step 4: Create the Order
     $request = [
       "type" => "online",
       "processing_mode" => "manual",
@@ -54,8 +52,10 @@ try {
     $order_id = $order->id;
 
     $request_options->setCustomHeaders(["X-Idempotency-Key:<SOME_UNIQUE_VALUE>"]);
-    $response = $client_transactions->deleteTransaction($order_id, $transaction_id, $request_options);
-    if ($response === null || $response->getStatusCode() === 204) {
+
+    // Step 5: Delete a transaction
+    $response = $client_transactions->delete($order_id, $transaction_id, $request_options);
+    if ($response->getStatusCode() === 204) {
         echo "Transaction deleted successfully. HTTP Status Code: 204\n";
     } else {
         echo "Transaction deletion failed with status: " . $response->getStatusCode() . "\n";

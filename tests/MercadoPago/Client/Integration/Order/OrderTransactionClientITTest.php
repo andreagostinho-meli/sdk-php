@@ -108,7 +108,6 @@ final class OrderTransactionClientITTest extends TestCase
     {
         try {
             $client = new OrderClient();
-            $client_transaction = new OrderTransactionClient();
             $request = $this->createOrderBuilderMode();
             $request_options = new RequestOptions();
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
@@ -117,10 +116,9 @@ final class OrderTransactionClientITTest extends TestCase
             $transaction_id = $order->transactions->payments[0]->id;
             $this->assertNotNull($order_id);
             $this->assertNotNull($transaction_id);
-
-            $transaction_delete = $client_transaction->deleteTransaction($order_id, $transaction_id, $request_options);
+            $client_transaction = new OrderTransactionClient();
+            $transaction_delete = $client_transaction->delete($order_id, $transaction_id, $request_options);
             $this->assertEquals(204, $transaction_delete->getStatusCode());
-            $this->expectException(MPApiException::class);
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
@@ -138,7 +136,7 @@ final class OrderTransactionClientITTest extends TestCase
         $card_token = $client_token->create($this->createCardTokenRequest());
         $this->assertNotNull($card_token->id);
 
-        return[
+        return [
             "type" => "online",
             "processing_mode" => "manual",
             "total_amount" => "200.00",
