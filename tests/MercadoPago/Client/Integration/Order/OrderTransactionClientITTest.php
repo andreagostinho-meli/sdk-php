@@ -116,6 +116,7 @@ final class OrderTransactionClientITTest extends TestCase
             $transaction_id = $order->transactions->payments[0]->id;
             $this->assertNotNull($order_id);
             $this->assertNotNull($transaction_id);
+
             $client_transaction = new OrderTransactionClient();
             $transaction_delete = $client_transaction->delete($order_id, $transaction_id, $request_options);
             $this->assertEquals(204, $transaction_delete->getStatusCode());
