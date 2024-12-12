@@ -12,6 +12,9 @@ class Payer
     /** Class mapper. */
     use Mapper;
 
+    /** Customer id. */
+    public ?string $customer_id;
+
     /** Email. */
     public ?string $email;
 
