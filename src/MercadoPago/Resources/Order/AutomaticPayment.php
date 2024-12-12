@@ -5,17 +5,17 @@
 namespace MercadoPago\Resources\Order;
 
 /** Automatic Payment Class */
-class StoredCredential
+class AutomaticPayment
 {
   /** Payment profile id */
-  public ?string $payment_initiator;
+  public ?string $payment_profile_id;
 
   /** Retries */
-  public ?string  $reason;
+  public ?int  $retries;
 
   /** Schedule Date */
-  public ?bool $store_payment_method;
+  public ?string $schedule_date;
 
   /** Due Date */
-  public ?bool $first_payment;
+  public ?string $due_date;
 }
