@@ -12,7 +12,7 @@ use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 
 // Step 2: Set production or sandbox access token
-MercadoPagoConfig::setAccessToken("APP_USR-874202490252970-100714-e890db6519b0dceb4ef24ef41ed816e4-2021490138");
+MercadoPagoConfig::setAccessToken("<ACCESS_TOKEN>");
 // Step 2.1 (optional - default is SERVER): Set your runtime enviroment from MercadoPagoConfig::RUNTIME_ENVIROMENTS
 // In case you want to test in your local machine first, set runtime enviroment to LOCAL
 MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
@@ -37,7 +37,7 @@ try {
                     "payment_method" => [
                         "id" => "master",
                         "type" => "credit_card",
-                        "token" => "e95f195e5d68ddaee9e5374281047028",
+                        "token" => "<CARD_TOKEN>8",
                         "installments" => 1,
                         "statement_descriptor" => "Store",
                     ]
@@ -45,13 +45,13 @@ try {
             ]
         ],
         "payer" => [
-            "email" => "test_1734439736@testuser.com",
+            "email" => "<PAYER_EMAIL>",
         ]
     ];
 
     // Step 6: Create the request options, setting X-Idempotency-Key
     $create_order_request_options = new RequestOptions();
-    $create_order_request_options->setCustomHeaders(["X-Idempotency-Key: 911876655"]);
+    $create_order_request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE"]);
 
     // Step 7: Create the Order
     $order = $order_client->create($create_order_request, $create_order_request_options);
@@ -70,7 +70,7 @@ try {
 
     // Step 9: Create the request options, setting X-Idempotency-Key
     $update_transaction_request_options = new RequestOptions();
-    $update_transaction_request_options->setCustomHeaders(["X-Idempotency-Key: 0282387342"]);
+    $update_transaction_request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE"]);
 
     // Step 10: Update the transaction
     sleep(3);
