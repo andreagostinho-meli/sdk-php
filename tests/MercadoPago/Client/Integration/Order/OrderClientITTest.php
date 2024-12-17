@@ -95,9 +95,7 @@ final class OrderClientITTest extends TestCase
             "processing_mode" => "automatic",
             "total_amount" => "200.00",
             "external_reference" => "ext_ref_1234",
-            "type_config" => [
-                "capture_mode" => "manual"
-            ],
+            "capture_mode" => "manual",
             "transactions" => [
                 "payments" => [
                     [
