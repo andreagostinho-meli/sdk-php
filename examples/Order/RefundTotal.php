@@ -11,7 +11,7 @@ use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 
 // Step 2: Set production or sandbox access token
-MercadoPagoConfig::setAccessToken("<ACCESS_TOKEN>");
+MercadoPagoConfig::setAccessToken("APP_USR-874202490252970-100714-e890db6519b0dceb4ef24ef41ed816e4-2021490138");
 // Step 2.1 (optional - default is SERVER): Set your runtime enviroment from MercadoPagoConfig::RUNTIME_ENVIROMENTS
 // In case you want to test in your local machine first, set runtime enviroment to LOCAL
 MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
@@ -63,9 +63,9 @@ try {
     echo "\nStatus detail: " . $refunded_order->status_detail;
 
     // Step 9: Handle exceptions
-} catch (MPApiException $e) {
-    echo "Status code: " . $e->getApiResponse()->getStatusCode() . "\n";
-    echo "Content: ";
+}catch (MPApiException $e) {
+    echo "\nStatus code: " . $e->getApiResponse()->getStatusCode();
+    echo "\nContent: ";
     var_dump($e->getApiResponse()->getContent());
     echo "\n";
 } catch (\Exception $e) {

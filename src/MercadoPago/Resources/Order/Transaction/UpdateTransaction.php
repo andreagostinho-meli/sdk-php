@@ -20,7 +20,7 @@ class UpdateTransaction extends MPResource
     public array|object|null $payment_method;
 
     private $map = [
-        "payment_method" => "MercadoPago\Resources\Order\Transaction\PaymentMethod",
+        "payment_method" => "MercadoPago\Resources\Order\PaymentMethod",
     ];
 
     /**
