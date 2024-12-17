@@ -12,7 +12,7 @@ use MercadoPago\Client\CardToken\CardTokenClient;
 /**
  * OrderClient integration tests.
  */
-final class DaniOrderClientITTest extends TestCase
+final class OrderClientITTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
