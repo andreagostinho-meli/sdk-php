@@ -12,7 +12,7 @@ use MercadoPago\Client\CardToken\CardTokenClient;
 /**
  * OrderClient integration tests.
  */
-final class OrderClientITTest extends TestCase
+final class DaniOrderClientITTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
@@ -25,7 +25,6 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequest();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
             $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
         } catch (MPApiException $e) {
@@ -68,7 +67,6 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequestCapture();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
             $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
 
@@ -122,7 +120,6 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequest();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
             $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
 
@@ -148,7 +145,6 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createRequestCapture();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
             $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
 
@@ -156,7 +152,7 @@ final class OrderClientITTest extends TestCase
 
             $order_cancelled = $client->cancel($order->id, $request_options);
             $this->assertNotNull($order_cancelled->id);
-            $this->assertSame("cancelled", $order_cancelled->status);
+            $this->assertSame("canceled", $order_cancelled->status); 
         } catch (MPApiException $e) {
             $apiResponse = $e->getApiResponse();
             $statusCode = $apiResponse->getStatusCode();
@@ -173,7 +169,6 @@ final class OrderClientITTest extends TestCase
             $client = new OrderClient();
             $request = $this->createOrderProcess();
             $request_options = new RequestOptions();
-            $request_options->setCustomHeaders(["X-Sandbox: true"]);
             $order = $client->create($request, $request_options);
             $this->assertNotNull($order->id);
 
@@ -228,7 +223,7 @@ final class OrderClientITTest extends TestCase
             $request_options->setCustomHeaders(["X-Sandbox: true"]);
 
             $order = $client->create($request, $request_options);
-            sleep(3);
+            sleep(5);
             $refunded_order = $client->refund($order->id, null, $request_options);
 
             $this->assertSame($order->id, $refunded_order->id);
@@ -263,7 +258,7 @@ final class OrderClientITTest extends TestCase
                     ],
                 ],
             ];
-            sleep(3);
+            sleep(5);
             $refunded_order = $client->refund($order->id, $refund_request, $request_options);
 
             $this->assertSame($order->id, $refunded_order->id);
