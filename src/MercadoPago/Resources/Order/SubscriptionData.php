@@ -16,7 +16,7 @@ class SubscriptionData
   public array|object|null $subscription_sequence;
 
   /** Invoice id */
-  public ?string  $invoice_id;
+  public ?string $invoice_id;
 
   /** Invoice period  */
   public array|object|null $invoice_period;

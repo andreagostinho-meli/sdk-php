@@ -11,7 +11,7 @@ use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 
 // Step 2: Set production or sandbox access token
-MercadoPagoConfig::setAccessToken("APP_USR-874202490252970-100714-e890db6519b0dceb4ef24ef41ed816e4-2021490138");
+MercadoPagoConfig::setAccessToken("<ACCESS_TOKEN>");
 // Step 2.1 (optional - default is SERVER): Set your runtime enviroment from MercadoPagoConfig::RUNTIME_ENVIROMENTS
 // In case you want to test in your local machine first, set runtime enviroment to LOCAL
 MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);

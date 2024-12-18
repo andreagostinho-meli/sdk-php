@@ -8,7 +8,7 @@ namespace MercadoPago\Resources\Order;
 class SubscriptionSequence
 {
   /** Number */
-  public ?int  $number;
+  public ?int $number;
 
   /** Total */
   public ?int $total;

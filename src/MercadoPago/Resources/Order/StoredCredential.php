@@ -11,7 +11,7 @@ class StoredCredential
   public ?string $payment_initiator;
 
   /** Retries */
-  public ?string  $reason;
+  public ?string $reason;
 
   /** Schedule Date */
   public ?bool $store_payment_method;

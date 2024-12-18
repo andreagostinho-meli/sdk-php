@@ -37,7 +37,7 @@ try {
                     "payment_method" => [
                         "id" => "master",
                         "type" => "credit_card",
-                        "token" => "<CARD_TOKEN>8",
+                        "token" => "<CARD_TOKEN>",
                         "installments" => 1,
                         "statement_descriptor" => "Store",
                     ]
@@ -51,7 +51,7 @@ try {
 
     // Step 6: Create the request options, setting X-Idempotency-Key
     $create_order_request_options = new RequestOptions();
-    $create_order_request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE"]);
+    $create_order_request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
     // Step 7: Create the Order
     $order = $order_client->create($create_order_request, $create_order_request_options);
@@ -70,7 +70,7 @@ try {
 
     // Step 9: Create the request options, setting X-Idempotency-Key
     $update_transaction_request_options = new RequestOptions();
-    $update_transaction_request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE"]);
+    $update_transaction_request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
 
     // Step 10: Update the transaction
     sleep(3);
